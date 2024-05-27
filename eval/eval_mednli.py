@@ -29,6 +29,24 @@ ground_truth_key = "gold_label"
 
 
 def compute_metrics(model_output, label):
+    """
+    Retrieves the label of the given model output, uppercases it, and then finds
+    all occurrences of the label in the input using regular expressions. If only
+    one occurrence is found, the function returns an accuracy of 1, otherwise it
+    returns an accuracy of 0.
+
+    Args:
+        model_output (str): 1-hot encoded output of the machine learning model,
+            which is searched for labels to determine the accuracy of the model's
+            predictions.
+        label (str): 10-class label of the image, which is used to filter and
+            determine the accuracy of the generated documentation.
+
+    Returns:
+        dict: a dictionary containing either "ACCURACY" with a value of 1 or 0,
+        indicating the model's accuracy.
+
+    """
     answer = re.findall(label.upper(), model_output.upper())
     if len(answer) == 1:
         return {"ACCURACY": 1}
@@ -37,6 +55,13 @@ def compute_metrics(model_output, label):
 
 def main():
 
+    """
+    Parses command-line arguments and prepares data for few-shot learning tasks
+    using a pre-trained model. It loads data, builds few-shot examples, and uses
+    an OpenAI API to generate responses to the input prompt. The function computes
+    metrics and writes them to log files, and also saves the results in a JSON file.
+
+    """
     argument_parser = argparse.ArgumentParser()
     argument_parser.add_argument("--model_address", type=str)
     argument_parser.add_argument("--model_name_or_path", type=str)
