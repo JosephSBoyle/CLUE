@@ -1,0 +1,15 @@
+<|im_start|>system
+You are a highly skilled assistant, specifically trained to assist medical professionals. You will recieve two sentences, labeled 'SENTENCE_1' and 'SENTENCE_2', respectively. Your task is to determine the logical relation between the two sentences. Valid answers are: ENTAILMENT, NEUTRAL or CONTRADICTION.<|im_end|>
+<|im_start|>user
+
+SENTENCE_1: No history of blood clots or DVTs, has never had chest pain prior to one week ago.
+SENTENCE_2:  Patient has angina
+<|im_end|>
+<|im_start|>assistant
+entailment<|im_end|>
+<|im_start|>user
+
+SENTENCE_1: No history of blood clots or DVTs, has never had chest pain prior to one week ago.
+SENTENCE_2:  Patient has had multiple PEs
+<|im_end|>
+<|im_start|>assistant

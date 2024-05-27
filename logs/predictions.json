@@ -1,0 +1,10 @@
+{"ACCURACY": 1, "Model Answer": "CONTRADICTION<|eot_id|>", "Ground Truth Answer": "contradiction"}
+{"ACCURACY": 0, "Model Answer": "CONTRADICTION<|eot_id|>", "Ground Truth Answer": "neutral"}
+{"ACCURACY": 1, "Model Answer": "ENTAILMENT<|eot_id|>", "Ground Truth Answer": "entailment"}
+{"ACCURACY": 1, "Model Answer": "CONTRADICTION<|eot_id|>", "Ground Truth Answer": "contradiction"}
+{"ACCURACY": 0, "Model Answer": "ENTAILMENT<|eot_id|>", "Ground Truth Answer": "neutral"}
+{"ACCURACY": 1, "Model Answer": "ENTAILMENT\n\nThe information provided in SENTENCE_1 explicitly states that the patient has COPD/Asthma, which is a type of obstructive lung disease. Therefore, SENTENCE_2 logically follows from the information in SENTENCE_1.<|eot_id|>", "Ground Truth Answer": "entailment"}
+{"ACCURACY": 1, "Model Answer": "CONTRADICTION<|eot_id|>", "Ground Truth Answer": "contradiction"}
+{"ACCURACY": 0, "Model Answer": "CONTRADICTION\n\nThe first sentence describes a patient with COPD/Asthma, indicating that they have a lung disease. The second sentence states that the patient is a smoker, which is a contributing factor to the development of COPD/Asthma. Therefore, the two sentences contradict each other, as the patient cannot be a smoker and have COPD/Asthma at the same time.<|eot_id|>", "Ground Truth Answer": "neutral"}
+{"ACCURACY": 1, "Model Answer": "ENTAILMENT<|eot_id|>", "Ground Truth Answer": "entailment"}
+{"ACCURACY": 1, "Model Answer": "CONTRADICTION<|eot_id|>", "Ground Truth Answer": "contradiction"}

@@ -49,8 +49,7 @@ def build_model_input(example, user_prompt_template, model_is_instruct, few_shot
         for msg in chat:
             if isinstance(msg, list):
                 print(msg)
-        model_input = tokenizer.apply_chat_template(
-            chat, tokenize=False, add_generation_prompt=True)
+        model_input = tokenizer.apply_chat_template(chat, tokenize=False, add_generation_prompt=True)
 
     else:
         model_input = f"\n\n{user_prompt}\n\n"

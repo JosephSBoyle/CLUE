@@ -1,4 +1,9 @@
-
+"""
+Example running from the root of the project:
+```
+python eval/eval_mednli.py --model_address http://127.0.0.1:8080 --model_name_or_path meta-llama/Meta-Llama-3-8B --model_has_system --model_is_instruct
+```
+"""
 import argparse
 import json
 import random
@@ -37,20 +42,22 @@ def main():
     argument_parser.add_argument("--model_name_or_path", type=str)
     argument_parser.add_argument("--model_has_system", action='store_true')
     argument_parser.add_argument("--model_is_instruct", action='store_true')
-    argument_parser.add_argument("--num_few_shot_examples", type=int)
-    argument_parser.add_argument("--data_path", type=str)
-    argument_parser.add_argument("--log_path", type=str)
+    argument_parser.add_argument("--num_few_shot_examples", type=int, default=1)
+    # argument_parser.add_argument("--data_path", type=str, default="data/MedNLI/mli_train_v1.jsonl")
+    argument_parser.add_argument("--data_path", type=str, default="data/MedNLI/mli_dev_v1.jsonl")
+    argument_parser.add_argument("--log_path", type=str, default="logs")
     argument_parser.add_argument("--token", type=str)
     args = argument_parser.parse_args()
 
-    # Tokenizer & Inference client
+    # # Tokenizer & Inference client
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path, token=args.token)
-    inference_client = InferenceClient(model=args.model_address)
+    # inference_client = InferenceClient(model=args.model_address)
+    inference_client = None
 
     # Load data
     with open(args.data_path, "r") as data_file:
         data = [json.loads(line) for line in data_file]
-    
+
     log_path = Path(args.log_path)
     if not log_path.exists():
         log_path.mkdir(parents=True, exist_ok=True)
@@ -65,11 +72,19 @@ def main():
 
     # Create few shot examples
     few_shot_chat = build_few_shot_examples(
-        data[:args.num_few_shot_examples], sys_prompt, user_prompt_template, assistant_response_template, args.model_has_system, args.model_is_instruct)
+        data[:args.num_few_shot_examples],
+        sys_prompt,user_prompt_template, assistant_response_template, args.model_has_system, args.model_is_instruct
+    )
+
+    from openai import OpenAI
+    client = OpenAI(
+        base_url="http://localhost:8080/v1", # "http://<Your api-server IP>:port"
+        api_key = "sk-no-key-required"
+    )
 
     results = {}
     for i, entry in enumerate((pbar := tqdm(data[args.num_few_shot_examples:]))):
-        model_input = build_model_input(entry, user_prompt_template, args.model_is_instruct, few_shot_chat, tokenizer)
+        model_input = build_model_input(entry, user_prompt_template, args.model_is_instruct, few_shot_chat, tokenizer=tokenizer)
         model_input += assistant_response_template.format(**{ground_truth_key: ""})
         
         if i == 0:
@@ -80,15 +95,16 @@ def main():
         ground_truth = entry[ground_truth_key]
 
         if "llama-3" in args.model_name_or_path.lower() or "llama3" in args.model_name_or_path.lower():
-            output = inference_client.text_generation(
-                model_input,
-                max_new_tokens=20,
-                stream=False,
-                details=False,
-                stop_sequences=["<|start_header_id|>", "<|end_header_id|>", "<|eot_id|>", "<|im_end|>"]
+            completion = client.chat.completions.create(
+                model=args.model_name_or_path,
+                messages=[
+                    {"role": "system", "content": sys_prompt},
+                    {"role": "user", "content": model_input}
+                ]
             )
+            output = completion.choices[0].message.content
             if "<|im_end|>" in output:
-                        output = output.split("<|im_end|>")[0]
+                output = output.split("<|im_end|>")[0]
         else:
             output = inference_client.text_generation(
                 model_input,
